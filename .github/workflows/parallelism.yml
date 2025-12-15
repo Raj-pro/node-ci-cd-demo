@@ -1,17 +1,29 @@
-name: Matrix Strategy Example
+name: Parallelism and Concurrency Example
 
 on: push
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: build-group
+      cancel-in-progress: true
+    steps:
+      - run: echo "Building the app"
+      - run: sleep 20
+
   test:
     runs-on: ubuntu-latest
+    concurrency:
+      group: test-group
+      cancel-in-progress: true
     strategy:
       matrix:
-        node-version: [12, 14, 16]
+        os: [ubuntu-latest, windows-latest]
+        node: [18, 20]
     steps:
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - run: node --version
+          node-version: ${{ matrix.node }}
+      - run: echo "Testing on ${{ matrix.os }} with Node.js ${{ matrix.node }}"
