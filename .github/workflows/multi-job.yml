@@ -1,21 +1,17 @@
-name: Dependent Jobs Example
+name: Matrix Example
 
 on: push
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Building the application"
-
   test:
     runs-on: ubuntu-latest
-    needs: build
+    strategy:
+      matrix:
+        node-version: [12, 14, 16]
     steps:
-      - run: echo "Running tests"
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - run: echo "Deploying application"
+      - run: node --version
