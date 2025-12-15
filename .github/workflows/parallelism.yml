@@ -1,19 +1,17 @@
-name: Parallel Jobs Example
+name: Matrix Strategy Example
 
 on: push
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Building the app"
-
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12, 14, 16]
     steps:
-      - run: echo "Testing the app"
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Deploying the app"
+      - run: node --version
